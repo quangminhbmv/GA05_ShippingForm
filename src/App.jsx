@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import provincesData from "./data/provinces.json";
+import wardsData from "./data/ward.json";
 
 export default function App() {
   const {
@@ -11,33 +12,58 @@ export default function App() {
     formState: { errors },
   } = useForm();
 
-  const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
   const selectedProvince = watch("province");
-  const selectedDistrict = watch("district");
 
-  // Load districts when province changes
+  const provincesList = Object.values(provincesData || {}).map((p) => ({
+    code: p.code,
+    name: p.name || p.name_with_type || p.slug || p.code,
+  }));
+
+  // normalize wards data to array
+  const wardsArray = Array.isArray(wardsData) ? wardsData : Object.values(wardsData || {});
+
+  // Khi chọn tỉnh: lấy trực tiếp danh sách phường/xã thuộc tỉnh (match bằng parent_code hoặc path)
   useEffect(() => {
     if (!selectedProvince) {
-      setDistricts([]);
       setWards([]);
       return;
     }
-    const province = provincesData.find((p) => p.name === selectedProvince);
-    setDistricts(province?.districts || []);
-    setWards([]);
-  }, [selectedProvince]);
+    const provinceCode = String(selectedProvince);
+    const provinceName = provincesList.find((p) => String(p.code) === provinceCode)?.name || "";
 
-  // Load wards when district changes
-  useEffect(() => {
-    if (!selectedDistrict) {
-      setWards([]);
-      return;
+    const matched = wardsArray
+      .filter((w) => {
+        const parent = String(w.parent_code ?? w.province_code ?? "").trim();
+        if (parent === provinceCode) return true;
+        const path = String(w.path_with_type ?? w.path ?? "");
+        if (provinceName && path.includes(provinceName)) return true;
+        return false;
+      })
+      .map((w) => ({
+        code: String(w.code ?? w.ward_code ?? w.id ?? ""),
+        name:
+          w.name_with_type ??
+          w.name ??
+          w.ward_name ??
+          w.path_with_type ??
+          w.path ??
+          String(w.code ?? w.ward_code ?? w.id ?? ""),
+      }));
+
+    // dedupe và sort theo tên
+    const seen = new Set();
+    const unique = [];
+    for (const item of matched) {
+      if (!item.code || seen.has(item.code)) continue;
+      seen.add(item.code);
+      unique.push(item);
     }
-    const district = districts.find((d) => d.name === selectedDistrict);
-    setWards(district?.wards || []);
-  }, [selectedDistrict, districts]);
+    unique.sort((a, b) => a.name.localeCompare(b.name, "vi"));
+
+    setWards(unique);
+  }, [selectedProvince, wardsArray, provincesList]);
 
   const onSubmit = (data) => {
     alert("Gửi thành công!");
@@ -74,10 +100,21 @@ export default function App() {
             <input
               {...register("dob", {
                 required: "Ngày sinh bắt buộc",
-                pattern: {
-                  // chấp nhận dd/mm/yyyy
-                  value: /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
-                  message: "Định dạng ngày phải là dd/mm/yyyy",
+                validate: (value) => {
+                  // Kiểm tra định dạng dd/mm/yyyy
+                  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                    return "Định dạng phải là dd/mm/yyyy";
+                  }
+                  const [d, m, y] = value.split("/").map((v) => Number(v));
+                  // kiểm tra month
+                  if (m < 1 || m > 12) return "Tháng không hợp lệ";
+                  // kiểm tra year (giữ reasonable range)
+                  const currentYear = new Date().getFullYear();
+                  if (y < 1900 || y > currentYear) return "Năm không hợp lệ";
+                  // số ngày trong tháng (Date months: 0-11, dùng day 0 trick)
+                  const daysInMonth = new Date(y, m, 0).getDate();
+                  if (d < 1 || d > daysInMonth) return "Ngày không hợp lệ";
+                  return true;
                 },
               })}
               type="text"
@@ -172,42 +209,26 @@ export default function App() {
             )}
           </div>
 
-         {/* Province */}
+          {/* Province */}
           <div>
             <label className="block font-medium mb-1">Tỉnh / Thành phố</label>
-            <select {...register("province", { required: "Chọn tỉnh/thành" })} className="input">
+            <select {...register("province", { required: "Chọn tỉnh/thành" })} className="input" defaultValue="">
               <option value="">-- Chọn tỉnh/thành --</option>
-              {provincesData.map((p) => (
-                <option key={p.name} value={p.name}>{p.name}</option>
+              {provincesList.map((p) => (
+                <option key={p.code || p.name} value={p.code}>{p.name}</option>
               ))}
             </select>
             {errors.province && <p className="error">{errors.province.message}</p>}
           </div>
 
-          {/* District */}
-          {districts.length > 0 && (
-            <div>
-              <label className="block font-medium mb-1">Quận / Huyện</label>
-              <select {...register("district", { required: "Chọn quận/huyện" })} className="input">
-                <option value="">-- Chọn quận/huyện --</option>
-                {districts.map((d) => (
-                  <option key={d.name} value={d.name}>{d.name}</option>
-                ))}
-              </select>
-              {errors.district && (
-                <p className="error">{errors.district.message}</p>
-              )}
-            </div>
-          )}
-
           {/* Ward */}
           {wards.length > 0 && (
             <div>
               <label className="block font-medium mb-1">Phường / Xã</label>
-              <select {...register("ward", { required: "Chọn phường/xã" })} className="input">
+              <select {...register("ward", { required: "Chọn phường/xã" })} className="input" defaultValue="">
                 <option value="">-- Chọn phường/xã --</option>
-                {wards.map((w, idx) => (
-                  <option key={idx} value={w}>{w}</option>
+                {wards.map((w) => (
+                  <option key={w.code} value={w.code}>{w.name}</option>
                 ))}
               </select>
               {errors.ward && <p className="error">{errors.ward.message}</p>}
