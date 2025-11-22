@@ -172,13 +172,13 @@ export default function App() {
             )}
           </div>
 
-          {/* Province */}
+         {/* Province */}
           <div>
             <label className="block font-medium mb-1">Tỉnh / Thành phố</label>
-            <select {...register("province")} className="input">
+            <select {...register("province", { required: "Chọn tỉnh/thành" })} className="input">
               <option value="">-- Chọn tỉnh/thành --</option>
               {provincesData.map((p) => (
-                <option key={p.name}>{p.name}</option>
+                <option key={p.name} value={p.name}>{p.name}</option>
               ))}
             </select>
             {errors.province && <p className="error">{errors.province.message}</p>}
@@ -188,10 +188,10 @@ export default function App() {
           {districts.length > 0 && (
             <div>
               <label className="block font-medium mb-1">Quận / Huyện</label>
-              <select {...register("district")} className="input">
+              <select {...register("district", { required: "Chọn quận/huyện" })} className="input">
                 <option value="">-- Chọn quận/huyện --</option>
                 {districts.map((d) => (
-                  <option key={d.name}>{d.name}</option>
+                  <option key={d.name} value={d.name}>{d.name}</option>
                 ))}
               </select>
               {errors.district && (
@@ -204,10 +204,10 @@ export default function App() {
           {wards.length > 0 && (
             <div>
               <label className="block font-medium mb-1">Phường / Xã</label>
-              <select {...register("ward")} className="input">
+              <select {...register("ward", { required: "Chọn phường/xã" })} className="input">
                 <option value="">-- Chọn phường/xã --</option>
                 {wards.map((w, idx) => (
-                  <option key={idx}>{w}</option>
+                  <option key={idx} value={w}>{w}</option>
                 ))}
               </select>
               {errors.ward && <p className="error">{errors.ward.message}</p>}
