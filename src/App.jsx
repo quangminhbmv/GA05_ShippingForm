@@ -72,9 +72,17 @@ export default function App() {
           <div>
             <label className="block font-medium mb-1">Ngày sinh</label>
             <input
-              {...register("dob", { required: "Ngày sinh bắt buộc" })}
-              type="date"
+              {...register("dob", {
+                required: "Ngày sinh bắt buộc",
+                pattern: {
+                  // chấp nhận dd/mm/yyyy
+                  value: /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
+                  message: "Định dạng ngày phải là dd/mm/yyyy",
+                },
+              })}
+              type="text"
               className="input"
+              placeholder="dd/mm/yyyy"
             />
             {errors.dob && <p className="error">{errors.dob.message}</p>}
           </div>

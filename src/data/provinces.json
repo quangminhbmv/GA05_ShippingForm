@@ -8,16 +8,24 @@
       },
       {
         "name": "Hoàn Kiếm",
-        "wards": ["Hàng Bạc", "Hàng Buồm", "Đồng Xuân"]
+        "wards": ["Phan Chu Trinh", "Hàng Bạc", "Hàng Đào"]
+      },
+      {
+        "name": "Tây Hồ",
+        "wards": ["Tây Hồ", "Nhật Tân", "Quảng An"]
       }
     ]
   },
   {
-    "name": "TP. Hồ Chí Minh",
+    "name": "TP Hồ Chí Minh",
     "districts": [
       {
         "name": "Quận 1",
-        "wards": ["Bến Nghé", "Bến Thành", "Cầu Kho"]
+        "wards": ["Bến Nghé", "Bến Thành", "Nguyễn Thái Bình"]
+      },
+      {
+        "name": "Quận 2",
+        "wards": ["Thủ Thiêm", "An Khánh", "Bình An"]
       },
       {
         "name": "Quận 3",
@@ -26,74 +34,19 @@
     ]
   },
   {
-    "name": "Hải Phòng",
-    "districts": [
-      {
-        "name": "Hồng Bàng",
-        "wards": ["Hạ Lý", "Minh Khai", "Sở Dầu"]
-      }
-    ]
-  },
-  {
     "name": "Đà Nẵng",
     "districts": [
       {
         "name": "Hải Châu",
-        "wards": ["Hải Châu 1", "Hải Châu 2", "Thạch Thang"]
-      }
-    ]
-  },
-  {
-    "name": "Cần Thơ",
-    "districts": [
+        "wards": ["Thạch Thang", "Hòa Cường Bắc", "Hòa Cường Nam"]
+      },
       {
-        "name": "Ninh Kiều",
-        "wards": ["Xuân Khánh", "An Cư", "An Hòa"]
-      }
-    ]
-  },
-  {
-    "name": "An Giang",
-    "districts": [
+        "name": "Sơn Trà",
+        "wards": ["Thọ Quang", "Mân Thái", "Nại Hiên Đông"]
+      },
       {
-        "name": "Long Xuyên",
-        "wards": ["Mỹ Bình", "Mỹ Long", "Mỹ Phước"]
-      }
-    ]
-  },
-  {
-    "name": "Bình Dương",
-    "districts": [
-      {
-        "name": "Thủ Dầu Một",
-        "wards": ["Hiệp An", "Phú Hòa", "Phú Lợi"]
-      }
-    ]
-  },
-  {
-    "name": "Đồng Nai",
-    "districts": [
-      {
-        "name": "Biên Hòa",
-        "wards": ["An Bình", "Bửu Hòa", "Bửu Long"]
-      }
-    ]
-  },
-  {
-    "name": "Khánh Hòa",
-    "districts": [
-      {
-        "name": "Nha Trang",
-        "wards": ["Vĩnh Hải", "Vĩnh Hòa", "Ngọc Hiệp"]
-      }
-    ]
-  },
-  {
-    "name": "Lâm Đồng",
-    "districts": [
-      {
-        "name": "Đà Lạt",
-        "wards": ["1", "2", "4"]
+        "name": "Ngũ Hành Sơn",
+        "wards": ["Hòa Hải", "Hòa Quý", "Khuê Mỹ"]
       }
     ]
   }
